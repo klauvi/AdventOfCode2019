@@ -6,7 +6,40 @@ const input = readInput();
 
 const ops = input.split(',').map(Number);
 let i = 0;
-const start = 1;
+const id = 5;
+
+const val = mode => (mode === 0 ? ops[ops[i++]] : ops[i++]);
+
+const computer = {
+  // add
+  1: mode => {
+    const [a, b, dest] = [val(mode[0]), val(mode[1]), ops[i++]];
+    ops[dest] = a + b;
+  },
+  // multiply
+  2: mode => {
+    const [a, b, dest] = [val(mode[0]), val(mode[1]), ops[i++]];
+    ops[dest] = a * b;
+  },
+  // input
+  3: () => (ops[ops[i++]] = id),
+  // output
+  4: mode => console.log(val(mode[0])),
+  // jump-if-true
+  5: mode => (i = val(mode[0]) !== 0 ? val(mode[1]) : ++i),
+  // jump-if-false
+  6: mode => (i = val(mode[0]) === 0 ? val(mode[1]) : ++i),
+  // less than
+  7: mode => {
+    const [a, b, dest] = [val(mode[0]), val(mode[1]), ops[i++]];
+    ops[dest] = a < b ? 1 : 0;
+  },
+  // equals
+  8: mode => {
+    const [a, b, dest] = [val(mode[0]), val(mode[1]), ops[i++]];
+    ops[dest] = a === b ? 1 : 0;
+  }
+};
 
 while (true) {
   const opCode = ops[i++];
@@ -19,16 +52,5 @@ while (true) {
     Math.floor(opCode / 1000) % 10,
     Math.floor(opCode / 10000) % 10
   ];
-  switch (instruction) {
-    case 3:
-      ops[ops[i++]] = start;
-      break;
-    case 4:
-      console.log(ops[ops[i++]]);
-      break;
-    default:
-      const a = mode[0] === 0 ? ops[ops[i++]] : ops[i++];
-      const b = mode[1] === 0 ? ops[ops[i++]] : ops[i++];
-      ops[ops[i++]] = instruction === 1 ? a + b : a * b;
-  }
+  computer[instruction](mode);
 }
