@@ -18,6 +18,15 @@ const countParents = child => {
   }
   return count;
 };
+const parentArray = child => {
+  let parent = map[child].parent;
+  const arr = [];
+  while (parent !== 'COM') {
+    arr.push(parent);
+    parent = map[parent].parent;
+  }
+  return arr;
+};
 
 lines.forEach(line => {
   const [a, b] = line.split(')');
@@ -37,3 +46,17 @@ lines.forEach(line => {
 let total = 0;
 orbs.forEach(orb => (total += countParents(orb)));
 console.log(total);
+
+const you = parentArray('YOU');
+const san = parentArray('SAN');
+
+let common = 'COM';
+you.some(orb => {
+  if (san.indexOf(orb) === -1) {
+    return false;
+  }
+  common = orb;
+  return true;
+});
+
+console.log(san.indexOf(common) + you.indexOf(common));
