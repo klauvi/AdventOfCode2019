@@ -22,3 +22,21 @@ layers.forEach(layer => {
     }
 });
 console.log(result);
+
+const canvas = [];
+
+for (let i = 0; i < width * height; i++) {
+    layers.some(layer => {
+        if (layer[i] !== '2') {
+            canvas[i] = layer[i];
+            return true;
+        }
+        return false;
+    })
+}
+
+let w = 0;
+for (let h = 0; h <= height; h++) {
+    console.log(canvas.slice(w, w + width).join('').replace(/0/g, ' ').replace(/1/g, '#'));
+    w+=width;
+}
